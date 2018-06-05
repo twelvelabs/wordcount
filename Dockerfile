@@ -1,0 +1,17 @@
+FROM golang:1.10.2-alpine
+
+RUN apk add --update \
+  curl \
+  && rm -rf /var/cache/apk/*
+
+# Download and install the latest release of dep
+RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 && \
+    chmod +x /usr/local/bin/dep
+
+RUN mkdir -p /go/src/github.com/twelvelabs/wordcount
+WORKDIR /go/src/github.com/twelvelabs/wordcount
+
+# copies the Gopkg.toml and Gopkg.lock to WORKDIR
+COPY Gopkg.toml Gopkg.lock ./
+# install the dependencies without checking for go code
+RUN dep ensure -vendor-only
