@@ -2,6 +2,8 @@ FROM golang:1.10.2-alpine
 
 RUN apk add --update \
   curl \
+  git \
+  openssh \
   && rm -rf /var/cache/apk/*
 
 # Download and install the latest release of dep
