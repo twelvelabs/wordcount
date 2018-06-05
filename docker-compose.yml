@@ -9,3 +9,11 @@ services:
       - 80:80
     stdin_open: true
     tty: true
+  ansible:
+    image: williamyeh/ansible:alpine3
+    environment:
+      ANSIBLE_CONFIG: /ansible/ansible.cfg
+    volumes:
+      - ~/.ssh/id_rsa:/root/.ssh/id_rsa
+      - ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
+      - ./ansible:/ansible
