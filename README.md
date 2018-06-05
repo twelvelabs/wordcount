@@ -22,3 +22,9 @@ docker-compose build
 docker-compose up
 open http://0.0.0.0
 ```
+
+## Tests
+
+```bash
+docker-compose run --rm app go test
+```

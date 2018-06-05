@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     build: .
-    command: 'go run main.go'
+    command: bin/server
     volumes:
       - .:/go/src/github.com/twelvelabs/wordcount:cached
     ports:

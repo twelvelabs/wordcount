@@ -8,17 +8,6 @@ import (
     "github.com/gorilla/mux"
 )
 
-func LoggingMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        log.Println(r.RequestURI)
-        next.ServeHTTP(w, r)
-    })
-}
-
-func DefaultEndpoint(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte("Hello World!\n"))
-}
-
 func main() {
     fmt.Println("Starting the application...")
 
