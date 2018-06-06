@@ -1,10 +1,9 @@
-FROM golang:1.10.2-alpine
+FROM golang:1.10.2
 
-RUN apk add --update \
+RUN apt-get update && apt-get install -y --no-install-recommends \
   curl \
   git \
-  openssh \
-  && rm -rf /var/cache/apk/*
+  && rm -rf /var/lib/apt/lists/*
 
 # Download and install the latest release of dep
 RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 && \

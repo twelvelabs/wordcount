@@ -1,0 +1,5 @@
+[remote]
+192.241.204.44
+
+[remote:vars]
+ansible_ssh_user=ubuntu

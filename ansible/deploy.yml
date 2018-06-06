@@ -1,0 +1,48 @@
+---
+- hosts: remote
+  become: yes
+  become_user: root
+  handlers:
+    - name: Restart app
+      service:
+        name: wordcount
+        state: restarted
+  tasks:
+    - name: Include secrets
+      include_vars: /ansible/secrets.yml
+      no_log: true
+
+    - name: Ensure app group exists
+      group:
+        name: wordcount
+
+    - name: Ensure app user exists
+      user:
+        comment: App user for wordcount service
+        group: wordcount
+        name: wordcount
+
+    - name: Copy app
+      copy:
+        src: /ansible/files/wordcount
+        dest: /usr/local/bin/wordcount
+        owner: root
+        group: root
+        mode: 0755
+      notify:
+        - Restart app
+
+    - name: Allow app to bind to low numbered ports
+      capabilities:
+        path: /usr/local/bin/wordcount
+        capability: cap_net_bind_service=+eip
+
+    - name: Create upstart config
+      copy:
+        src: /ansible/files/wordcount.conf
+        dest: /etc/init/wordcount.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - Restart app
