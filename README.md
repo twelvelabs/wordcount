@@ -28,3 +28,14 @@ open http://0.0.0.0
 ```bash
 docker-compose run --rm app go test
 ```
+
+## Deploy
+
+```bash
+# Configure ansible-vault password (ping @twelvelabs for it).
+echo $VAULT_PASS > ./ansible/vault_pass.txt
+# Build the app into ./ansible/files/wordcount
+docker-compose run --rm app bin/build
+# Deploy to the remote server
+docker-compose run --rm ansible ansible-playbook /ansible/deploy.yml
+```
