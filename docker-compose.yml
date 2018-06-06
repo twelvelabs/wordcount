@@ -7,11 +7,12 @@ services:
       - .:/go/src/github.com/twelvelabs/wordcount:cached
       - ./home:/home/wordcount
     ports:
-      - 80:80
+      - 443:443
     stdin_open: true
     tty: true
   ansible:
     image: williamyeh/ansible:alpine3
+    command: 'echo "Nothing to do: exiting..."'
     environment:
       ANSIBLE_CONFIG: /ansible/ansible.cfg
     volumes:
