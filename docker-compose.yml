@@ -5,15 +5,18 @@ services:
     command: bin/server
     volumes:
       - .:/go/src/github.com/twelvelabs/wordcount:cached
+      - ./home:/home/wordcount
     ports:
-      - 80:80
+      - 443:443
     stdin_open: true
     tty: true
   ansible:
     image: williamyeh/ansible:alpine3
+    command: 'echo "Nothing to do: exiting..."'
     environment:
       ANSIBLE_CONFIG: /ansible/ansible.cfg
     volumes:
       - ~/.ssh/id_rsa:/root/.ssh/id_rsa
       - ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
       - ./ansible:/ansible
+      - ./home:/home/wordcount

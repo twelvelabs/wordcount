@@ -19,8 +19,27 @@
     - name: Ensure app user exists
       user:
         comment: App user for wordcount service
+        create_home: yes
         group: wordcount
         name: wordcount
+
+    - name: Copy SSL cert
+      copy:
+        content: "{{ ssl_certificate }}"
+        dest: /home/wordcount/server.crt
+        owner: wordcount
+        group: wordcount
+        mode: 0600
+      no_log: true
+
+    - name: Copy SSL private key
+      copy:
+        content: "{{ ssl_private_key }}"
+        dest: /home/wordcount/server.key
+        owner: wordcount
+        group: wordcount
+        mode: 0600
+      no_log: true
 
     - name: Copy app
       copy:

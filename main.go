@@ -8,6 +8,9 @@ import (
     "github.com/gorilla/mux"
 )
 
+const sslCertPath string = "/home/wordcount/server.crt"
+const sslKeyPath string = "/home/wordcount/server.key"
+
 func main() {
     fmt.Println("Starting the application...")
 
@@ -15,6 +18,5 @@ func main() {
     r.HandleFunc("/", DefaultEndpoint).Methods("GET")
     r.Use(LoggingMiddleware)
 
-    // listen on port 80
-    log.Fatal(http.ListenAndServe(":80", r))
+    log.Fatal(http.ListenAndServeTLS(":443", sslCertPath, sslKeyPath, r))
 }

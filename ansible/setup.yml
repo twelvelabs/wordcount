@@ -1,0 +1,14 @@
+---
+- hosts: local
+  tasks:
+    - name: Include secrets
+      include_vars: /ansible/secrets.yml
+      no_log: true
+
+    - name: Create cert
+      local_action: copy content={{ ssl_certificate }} dest=/home/wordcount/server.crt
+      no_log: true
+
+    - name: Create private key
+      local_action: copy content={{ ssl_private_key }} dest=/home/wordcount/server.key
+      no_log: true
