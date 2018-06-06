@@ -10,9 +10,11 @@ A simple word counting service I was asked to put together as a [programming exe
 ## Install
 
 ```bash
-# Clone and build the app
 git clone git@github.com:twelvelabs/wordcount.git
 cd ./wordcount
+# Configure ansible-vault password (ping @twelvelabs for it).
+echo $VAULT_PASS > ./ansible/vault_pass.txt
+# Build the app image
 docker-compose build
 # Decrypt app secrets into ./home (which will be mounted into the app container)
 docker-compose run --rm ansible ansible-playbook /ansible/setup.yml
@@ -34,8 +36,6 @@ docker-compose run --rm app go test
 ## Deploy
 
 ```bash
-# Configure ansible-vault password (ping @twelvelabs for it).
-echo $VAULT_PASS > ./ansible/vault_pass.txt
 # Build the app into ./ansible/files/wordcount
 docker-compose run --rm app bin/build
 # Deploy to the remote server
