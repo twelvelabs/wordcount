@@ -10,10 +10,12 @@ A simple word counting service I was asked to put together as a [programming exe
 ## Install
 
 ```bash
-# Clone the app
+# Clone and build the app
 git clone git@github.com:twelvelabs/wordcount.git
 cd ./wordcount
 docker-compose build
+# Decrypt app secrets into ./home (which will be mounted into the app container)
+docker-compose run --rm ansible ansible-playbook /ansible/setup.yml
 ```
 
 ## Running

@@ -14,3 +14,7 @@
 ansible/vault_pass.txt
 # build dest when using ansible
 ansible/files/wordcount
+
+# secrets used for local dev
+home/server.crt
+home/server.key

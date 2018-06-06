@@ -5,6 +5,7 @@ services:
     command: bin/server
     volumes:
       - .:/go/src/github.com/twelvelabs/wordcount:cached
+      - ./home:/home/wordcount
     ports:
       - 80:80
     stdin_open: true
@@ -17,3 +18,4 @@ services:
       - ~/.ssh/id_rsa:/root/.ssh/id_rsa
       - ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub
       - ./ansible:/ansible
+      - ./home:/home/wordcount
