@@ -55,5 +55,4 @@ func Test_CreateTokenEndpoint_valid_username_and_password(t *testing.T) {
     http.HandlerFunc(CreateTokenEndpoint).ServeHTTP(rr, req)
 
     assert.Equal(t, http.StatusOK, rr.Code)
-    assert.Equal(t, "{\"token\":\"lolwat\"}\n", rr.Body.String())
 }

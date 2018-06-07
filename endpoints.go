@@ -2,7 +2,11 @@ package main
 
 import (
     "encoding/json"
+    "log"
     "net/http"
+    "time"
+
+    "github.com/dgrijalva/jwt-go"
 )
 
 
@@ -39,9 +43,25 @@ func CreateTokenEndpoint(w http.ResponseWriter, r *http.Request) {
 
     _, err = NewUserService().AuthenticateCredentials(user.Name, user.Password)
     if err != nil {
-        RenderJsonError(w, JsonError{ Status: http.StatusUnauthorized, Message: err.Error() })
+        RenderJsonError(w, JsonError{ Status: http.StatusUnauthorized, Message: "Invalid credentials" })
         return
     }
 
-    RenderJson(w, http.StatusOK, JwtToken{ Token: "lolwat" })
+    // Create the Claims
+    claims := &jwt.StandardClaims{
+        IssuedAt:   time.Now().Unix(),
+        ExpiresAt:  time.Now().Add(time.Minute * time.Duration(5)).Unix(),
+        Issuer:     "wordcount",
+        Subject:    user.Name,
+    }
+
+    token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+    tokenString, err := token.SignedString(jwtPrivateKey)
+    if err != nil {
+        log.Printf("JWT signing error: %s", err.Error())
+        RenderJsonError(w, JsonError{ Status: http.StatusInternalServerError, Message: "Internal error" })
+        return
+    }
+
+    RenderJson(w, http.StatusOK, JwtToken{ Token: tokenString })
 }
