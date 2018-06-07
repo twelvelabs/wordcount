@@ -15,7 +15,7 @@ func main() {
     fmt.Println("Starting the application...")
 
     r := mux.NewRouter()
-    r.HandleFunc("/", DefaultEndpoint).Methods("GET")
+    r.HandleFunc("/token", CreateTokenEndpoint).Methods("POST")
     r.Use(LoggingMiddleware)
 
     log.Fatal(http.ListenAndServeTLS(":443", sslCertPath, sslKeyPath, r))
