@@ -12,3 +12,7 @@
     - name: Create private key
       local_action: copy content={{ ssl_private_key }} dest=/home/wordcount/server.key
       no_log: true
+
+    - name: Create users file
+      local_action: template src=/ansible/files/users.j2 dest=/home/wordcount/users.json
+      no_log: true

@@ -1,0 +1,12 @@
+[
+{% for user in app_users %}
+  {
+    "name": "{{ user.name }}",
+    "password": "{{ user.password }}"
+  }
+  {%- if not loop.last -%}
+    ,
+  {% endif %}
+
+{% endfor %}
+]

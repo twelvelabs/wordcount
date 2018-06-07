@@ -41,6 +41,15 @@
         mode: 0600
       no_log: true
 
+    - name: Copy users file
+      template:
+        src: /ansible/files/users.j2
+        dest: /home/wordcount/users.json
+        owner: wordcount
+        group: wordcount
+        mode: 0600
+      no_log: true
+
     - name: Copy app
       copy:
         src: /ansible/files/wordcount
