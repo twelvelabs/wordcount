@@ -1,30 +1,58 @@
 package main
 
 import (
+    "fmt"
     "net/http"
     "net/http/httptest"
+    "strings"
     "testing"
+
+    "github.com/stretchr/testify/assert"
 )
 
-func TestDefaultEndpoint(t *testing.T) {
-    req, err := http.NewRequest("GET", "/", nil)
-    if err != nil {
-        t.Fatal(err)
-    }
+func Test_CreateTokenEndpoint_garbage(t *testing.T) {
+    reqJson := `}$!.this."is._garbage`
+    req, err := http.NewRequest("POST", "/token", strings.NewReader(reqJson))
+    assert.NoError(t, err)
+
     rr := httptest.NewRecorder()
-    handler := http.HandlerFunc(DefaultEndpoint)
-    handler.ServeHTTP(rr, req)
+    http.HandlerFunc(CreateTokenEndpoint).ServeHTTP(rr, req)
 
     // Check the status code is what we expect.
-    if status := rr.Code; status != http.StatusOK {
-        t.Errorf("handler returned wrong status code: got %v want %v",
-            status, http.StatusOK)
-    }
+    assert.Equal(t, http.StatusBadRequest, rr.Code)
+}
 
-    // Check the response body is what we expect.
-    expected := "Hello World!\n"
-    if rr.Body.String() != expected {
-        t.Errorf("handler returned unexpected body: got %v want %v",
-            rr.Body.String(), expected)
-    }
+func Test_CreateTokenEndpoint_invalid_json(t *testing.T) {
+    reqJson := `{ "lol": "not a user" }`
+    req, err := http.NewRequest("POST", "/token", strings.NewReader(reqJson))
+    assert.NoError(t, err)
+
+    rr := httptest.NewRecorder()
+    http.HandlerFunc(CreateTokenEndpoint).ServeHTTP(rr, req)
+
+    assert.Equal(t, http.StatusUnauthorized, rr.Code)
+}
+
+func Test_CreateTokenEndpoint_invalid_password(t *testing.T) {
+    user := NewUserService().users[0]
+    reqJson := fmt.Sprintf(`{ "name": "%s", "password": "nope" }`, user.Name)
+    req, err := http.NewRequest("POST", "/token", strings.NewReader(reqJson))
+    assert.NoError(t, err)
+
+    rr := httptest.NewRecorder()
+    http.HandlerFunc(CreateTokenEndpoint).ServeHTTP(rr, req)
+
+    assert.Equal(t, http.StatusUnauthorized, rr.Code)
+}
+
+func Test_CreateTokenEndpoint_valid_username_and_password(t *testing.T) {
+    user := NewUserService().users[0]
+    reqJson := fmt.Sprintf(`{ "name": "%s", "password": "%s" }`, user.Name, user.Password)
+    req, err := http.NewRequest("POST", "/token", strings.NewReader(reqJson))
+    assert.NoError(t, err)
+
+    rr := httptest.NewRecorder()
+    http.HandlerFunc(CreateTokenEndpoint).ServeHTTP(rr, req)
+
+    assert.Equal(t, http.StatusOK, rr.Code)
 }

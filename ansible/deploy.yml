@@ -41,6 +41,33 @@
         mode: 0600
       no_log: true
 
+    - name: Copy JWT private key
+      copy:
+        content: "{{ jwt_private_key }}"
+        dest: /home/wordcount/jwt.key
+        owner: wordcount
+        group: wordcount
+        mode: 0600
+      no_log: true
+
+    - name: Copy JWT public key
+      copy:
+        content: "{{ jwt_public_key }}"
+        dest: /home/wordcount/jwt.key.pub
+        owner: wordcount
+        group: wordcount
+        mode: 0600
+      no_log: true
+
+    - name: Copy users file
+      template:
+        src: /ansible/files/users.j2
+        dest: /home/wordcount/users.json
+        owner: wordcount
+        group: wordcount
+        mode: 0600
+      no_log: true
+
     - name: Copy app
       copy:
         src: /ansible/files/wordcount

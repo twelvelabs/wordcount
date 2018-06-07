@@ -18,3 +18,6 @@ ansible/files/wordcount
 # secrets used for local dev
 home/server.crt
 home/server.key
+home/jwt.key
+home/jwt.key.pub
+home/users.json

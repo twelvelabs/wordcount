@@ -27,7 +27,7 @@ docker-compose up
 open http://0.0.0.0
 ```
 
-## Tests
+## Unit tests
 
 ```bash
 docker-compose run --rm app go test
@@ -41,3 +41,17 @@ docker-compose run --rm app bin/build
 # Deploy to the remote server
 docker-compose run --rm ansible ansible-playbook /ansible/deploy.yml
 ```
+
+## Integration tests
+
+This assumes that you have both [HTTPie](https://httpie.org) and [jq](https://stedolan.github.io/jq/) installed.
+
+```bash
+# Get an auth token...
+TOKEN_JSON=$(http --verify=no POST https://192.241.204.44/token name="YOURNAME" password="YOURPASS")
+TOKEN=$(jq -r '.token' <<< "$TOKEN_JSON")
+
+# call the API
+http --verify=no POST https://192.241.204.44/wordcount "Authorization: Bearer $TOKEN"
+```
+
