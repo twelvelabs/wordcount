@@ -5,12 +5,20 @@
       include_vars: /ansible/secrets.yml
       no_log: true
 
-    - name: Create cert
+    - name: Create SSL cert
       local_action: copy content={{ ssl_certificate }} dest=/home/wordcount/server.crt
       no_log: true
 
-    - name: Create private key
+    - name: Create SSL private key
       local_action: copy content={{ ssl_private_key }} dest=/home/wordcount/server.key
+      no_log: true
+
+    - name: Create JWT private key
+      local_action: copy content={{ jwt_private_key }} dest=/home/wordcount/jwt.key
+      no_log: true
+
+    - name: Create JWT public key
+      local_action: copy content={{ jwt_public_key }} dest=/home/wordcount/jwt.key.pub
       no_log: true
 
     - name: Create users file
