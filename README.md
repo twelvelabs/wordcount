@@ -47,13 +47,16 @@ docker-compose run --rm ansible ansible-playbook /ansible/deploy.yml
 This assumes that you have both [HTTPie](https://httpie.org) and [jq](https://stedolan.github.io/jq/) installed.
 
 ```bash
-# Get an auth token...
+# Should return a 401 response
+echo "Hey ho, let's go. Hey ho, let's go." | http --verify=no POST https://192.241.204.44/wordcount
+
+# So, get an auth token...
 TOKEN_JSON=$(http --verify=no POST https://192.241.204.44/token name="YOURNAME" password="YOURPASS")
 TOKEN=$(jq -r '.token' <<< "$TOKEN_JSON")
 
-# call the API
-# either inline...
+# Then retry authenticated
 echo "Hey ho, let's go. Hey ho, let's go." | http --verify=no POST https://192.241.204.44/wordcount "Authorization: Bearer $TOKEN"
-# or with a text file
+
+# Now w/ a 3M text file :)
 http --verify=no POST https://192.241.204.44/wordcount "Authorization: Bearer $TOKEN" < ./fixtures/war-and-peace.txt
 ```

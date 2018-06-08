@@ -62,6 +62,9 @@ func Test_WordcountEndpoint_empty_body(t *testing.T) {
     reqText := ""
     req, err := http.NewRequest("POST", "/wordcount", strings.NewReader(reqText))
     assert.NoError(t, err)
+    // Create an auth token for the request
+    user := NewUserService().users[0]
+    req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.GenerateToken()))
 
     rr := httptest.NewRecorder()
     http.HandlerFunc(WordcountEndpoint).ServeHTTP(rr, req)
@@ -80,6 +83,9 @@ func Test_WordcountEndpoint_simple_text(t *testing.T) {
     reqText := `I don't know why you say "Goodbye", I say "Hello, hello, hello".`
     req, err := http.NewRequest("POST", "/wordcount", strings.NewReader(reqText))
     assert.NoError(t, err)
+    // Create an auth token for the request
+    user := NewUserService().users[0]
+    req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.GenerateToken()))
 
     rr := httptest.NewRecorder()
     http.HandlerFunc(WordcountEndpoint).ServeHTTP(rr, req)
