@@ -26,6 +26,15 @@
   version = "v1.6.2"
 
 [[projects]]
+  name = "github.com/jdkato/prose"
+  packages = [
+    "internal/util",
+    "tokenize"
+  ]
+  revision = "20d3663d4bc9dd10d75abcde9d92e04b4861c674"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -37,9 +46,18 @@
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
   version = "v1.2.1"
 
+[[projects]]
+  name = "gopkg.in/neurosnap/sentences.v1"
+  packages = [
+    ".",
+    "data"
+  ]
+  revision = "a7f18ead1433a139742a8b42ce7a059cfb484d60"
+  version = "v1.0.6"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0fa2df0b41613660ae13455b87393314d846600296937fbaaee2b4630058aee3"
+  inputs-digest = "c3d082aeb56a9f05cea25cb5cda19445cfcb219b11dc56c1b19b11606aa2a844"
   solver-name = "gps-cdcl"
   solver-version = 1
