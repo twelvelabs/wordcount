@@ -52,6 +52,8 @@ TOKEN_JSON=$(http --verify=no POST https://192.241.204.44/token name="YOURNAME" 
 TOKEN=$(jq -r '.token' <<< "$TOKEN_JSON")
 
 # call the API
-http --verify=no POST https://192.241.204.44/wordcount "Authorization: Bearer $TOKEN"
+# either inline...
+echo "Hey ho, let's go. Hey ho, let's go." | http --verify=no POST https://192.241.204.44/wordcount "Authorization: Bearer $TOKEN"
+# or with a text file
+http --verify=no POST https://192.241.204.44/wordcount "Authorization: Bearer $TOKEN" < ./fixtures/war-and-peace.txt
 ```
-
