@@ -9,7 +9,10 @@
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
-  packages = ["."]
+  packages = [
+    ".",
+    "request"
+  ]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
@@ -26,6 +29,15 @@
   version = "v1.6.2"
 
 [[projects]]
+  name = "github.com/jdkato/prose"
+  packages = [
+    "internal/util",
+    "tokenize"
+  ]
+  revision = "20d3663d4bc9dd10d75abcde9d92e04b4861c674"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -37,9 +49,18 @@
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
   version = "v1.2.1"
 
+[[projects]]
+  name = "gopkg.in/neurosnap/sentences.v1"
+  packages = [
+    ".",
+    "data"
+  ]
+  revision = "a7f18ead1433a139742a8b42ce7a059cfb484d60"
+  version = "v1.0.6"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0fa2df0b41613660ae13455b87393314d846600296937fbaaee2b4630058aee3"
+  inputs-digest = "e3828a79973f3255cd63423f3f4e1381010fe07f00f4cd930df946b79fd934ed"
   solver-name = "gps-cdcl"
   solver-version = 1

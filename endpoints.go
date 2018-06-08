@@ -1,12 +1,14 @@
 package main
 
 import (
+    "bytes"
     "encoding/json"
-    "log"
     "net/http"
-    "time"
+    "strings"
 
     "github.com/dgrijalva/jwt-go"
+    "github.com/dgrijalva/jwt-go/request"
+    "github.com/jdkato/prose/tokenize"
 )
 
 
@@ -17,6 +19,11 @@ type JsonError struct {
 
 type JwtToken struct {
     Token   string  `json:"token"`
+}
+
+type WordcountResponse struct {
+    Count   int             `json:"count"`
+    Words   map[string]int  `json:"words"`
 }
 
 
@@ -41,27 +48,43 @@ func CreateTokenEndpoint(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    _, err = NewUserService().AuthenticateCredentials(user.Name, user.Password)
+    found, err := NewUserService().AuthenticateCredentials(user.Name, user.Password)
     if err != nil {
         RenderJsonError(w, JsonError{ Status: http.StatusUnauthorized, Message: "Invalid credentials" })
         return
     }
 
-    // Create the Claims
-    claims := &jwt.StandardClaims{
-        IssuedAt:   time.Now().Unix(),
-        ExpiresAt:  time.Now().Add(time.Minute * time.Duration(5)).Unix(),
-        Issuer:     "wordcount",
-        Subject:    user.Name,
-    }
+    RenderJson(w, http.StatusOK, JwtToken{ Token: found.GenerateToken() })
+}
 
-    token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
-    tokenString, err := token.SignedString(jwtPrivateKey)
-    if err != nil {
-        log.Printf("JWT signing error: %s", err.Error())
-        RenderJsonError(w, JsonError{ Status: http.StatusInternalServerError, Message: "Internal error" })
+func WordcountEndpoint(w http.ResponseWriter, r *http.Request) {
+    extractor := request.AuthorizationHeaderExtractor
+    token, err := request.ParseFromRequest(r, extractor, func(token *jwt.Token) (interface{}, error) {
+        return jwtPublicKey, nil
+    })
+    if err != nil || !token.Valid {
+        RenderJsonError(w, JsonError{ Status: http.StatusUnauthorized, Message: "Invalid token" })
         return
     }
 
-    RenderJson(w, http.StatusOK, JwtToken{ Token: tokenString })
+    // neither `strings.ToLower` nor the tokenizer accept an io.Reader,
+    // so we need to copy the request body over to a string :(
+    buf := new(bytes.Buffer)
+    buf.ReadFrom(r.Body)
+    body := buf.String()
+    // rip the body string into an array of lowercase tokens...
+    tokenizer := tokenize.NewWordBoundaryTokenizer()
+    tokens := tokenizer.Tokenize(strings.ToLower(body))
+    // count up how many times each token is present...
+    words := make(map[string]int)
+    for _, t := range tokens {
+        words[t] += 1
+    }
+    // and wrap it up in a response object!
+    wr := WordcountResponse{
+        Count: len(tokens),
+        Words: words,
+    }
+    RenderJson(w, http.StatusOK, wr)
 }
+

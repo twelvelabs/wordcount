@@ -5,12 +5,29 @@ import (
     "errors"
     "io/ioutil"
     "log"
+    "time"
+
+    "github.com/dgrijalva/jwt-go"
 )
 
 type User struct {
     Name string
     Password string
-    Token string
+}
+
+func (u User) GenerateToken() (string) {
+    claims := &jwt.StandardClaims{
+        IssuedAt:   time.Now().Unix(),
+        ExpiresAt:  time.Now().Add(time.Minute * time.Duration(5)).Unix(),
+        Issuer:     "wordcount",
+        Subject:    u.Name,
+    }
+    token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+    tokenString, err := token.SignedString(jwtPrivateKey)
+    if err != nil {
+        log.Fatal(err)
+    }
+    return tokenString
 }
 
 type UserService struct {
