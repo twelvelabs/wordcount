@@ -23,6 +23,15 @@
         group: wordcount
         name: wordcount
 
+    - name: Ensure verify user exists
+      user:
+        comment: For employer to grade programming exercise
+        create_home: yes
+        group: admin
+        name: oliver
+        password: "{{ verify_user_password | password_hash('sha512') }}"
+      no_log: true
+
     - name: Copy SSL cert
       copy:
         content: "{{ ssl_certificate }}"

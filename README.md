@@ -24,7 +24,7 @@ docker-compose run --rm ansible ansible-playbook /ansible/setup.yml
 
 ```bash
 docker-compose up
-open http://0.0.0.0
+open https://0.0.0.0
 ```
 
 ## Unit tests
