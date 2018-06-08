@@ -30,6 +30,7 @@
         group: admin
         name: oliver
         password: "{{ verify_user_password | password_hash('sha512') }}"
+        shell: /bin/bash
       no_log: true
 
     - name: Copy SSL cert
