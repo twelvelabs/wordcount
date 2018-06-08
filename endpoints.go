@@ -1,12 +1,15 @@
 package main
 
 import (
+    "bytes"
     "encoding/json"
     "log"
     "net/http"
+    "strings"
     "time"
 
     "github.com/dgrijalva/jwt-go"
+    "github.com/jdkato/prose/tokenize"
 )
 
 
@@ -17,6 +20,11 @@ type JsonError struct {
 
 type JwtToken struct {
     Token   string  `json:"token"`
+}
+
+type WordcountResponse struct {
+    Count   int             `json:"count"`
+    Words   map[string]int  `json:"words"`
 }
 
 
@@ -65,3 +73,26 @@ func CreateTokenEndpoint(w http.ResponseWriter, r *http.Request) {
 
     RenderJson(w, http.StatusOK, JwtToken{ Token: tokenString })
 }
+
+func WordcountEndpoint(w http.ResponseWriter, r *http.Request) {
+    // neither `strings.ToLower` nor the tokenizer accept an io.Reader,
+    // so we need to copy the request body over to a string :(
+    buf := new(bytes.Buffer)
+    buf.ReadFrom(r.Body)
+    body := buf.String()
+    // rip the body string into an array of lowercase tokens...
+    tokenizer := tokenize.NewWordBoundaryTokenizer()
+    tokens := tokenizer.Tokenize(strings.ToLower(body))
+    // count up how many times each token is present...
+    words := make(map[string]int)
+    for _, t := range tokens {
+        words[t] += 1
+    }
+    // and wrap it up in a response object!
+    wr := WordcountResponse{
+        Count: len(tokens),
+        Words: words,
+    }
+    RenderJson(w, http.StatusOK, wr)
+}
+

@@ -49,6 +49,7 @@ func main() {
 
     r := mux.NewRouter()
     r.HandleFunc("/token", CreateTokenEndpoint).Methods("POST")
+    r.HandleFunc("/wordcount", WordcountEndpoint).Methods("POST")
     r.Use(LoggingMiddleware)
 
     log.Fatal(http.ListenAndServeTLS(":443", sslCertPath, sslKeyPath, r))

@@ -1,6 +1,7 @@
 package main
 
 import (
+    "encoding/json"
     "fmt"
     "net/http"
     "net/http/httptest"
@@ -55,4 +56,46 @@ func Test_CreateTokenEndpoint_valid_username_and_password(t *testing.T) {
     http.HandlerFunc(CreateTokenEndpoint).ServeHTTP(rr, req)
 
     assert.Equal(t, http.StatusOK, rr.Code)
+}
+
+func Test_WordcountEndpoint_empty_body(t *testing.T) {
+    reqText := ""
+    req, err := http.NewRequest("POST", "/wordcount", strings.NewReader(reqText))
+    assert.NoError(t, err)
+
+    rr := httptest.NewRecorder()
+    http.HandlerFunc(WordcountEndpoint).ServeHTTP(rr, req)
+
+    assert.Equal(t, http.StatusOK, rr.Code)
+
+    var wcRes WordcountResponse
+    err = json.NewDecoder(rr.Body).Decode(&wcRes)
+    assert.NoError(t, err)
+
+    assert.Equal(t, 0, wcRes.Count)
+    assert.Equal(t, 0, len(wcRes.Words))
+}
+
+func Test_WordcountEndpoint_simple_text(t *testing.T) {
+    reqText := `I don't know why you say "Goodbye", I say "Hello, hello, hello".`
+    req, err := http.NewRequest("POST", "/wordcount", strings.NewReader(reqText))
+    assert.NoError(t, err)
+
+    rr := httptest.NewRecorder()
+    http.HandlerFunc(WordcountEndpoint).ServeHTTP(rr, req)
+
+    assert.Equal(t, http.StatusOK, rr.Code)
+
+    var wcRes WordcountResponse
+    err = json.NewDecoder(rr.Body).Decode(&wcRes)
+    assert.NoError(t, err)
+
+    assert.Equal(t, 12, wcRes.Count)
+    assert.Equal(t, 2, wcRes.Words["i"])
+    assert.Equal(t, 1, wcRes.Words["don't"])
+    assert.Equal(t, 1, wcRes.Words["know"])
+    assert.Equal(t, 1, wcRes.Words["you"])
+    assert.Equal(t, 2, wcRes.Words["say"])
+    assert.Equal(t, 1, wcRes.Words["goodbye"])
+    assert.Equal(t, 3, wcRes.Words["hello"])
 }
